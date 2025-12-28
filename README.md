@@ -108,5 +108,5 @@ This project demonstrates a **complete and reproducible trio-based variant calli
 ## 👤 Author
 **Prashanth E**  
 B-PHARMACY
-MSc Bioinformatics  
-
+MSc Bioinformatics 
+prashantheprashanth584@gmail.com
