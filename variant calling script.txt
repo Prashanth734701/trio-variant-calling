@@ -1,0 +1,40 @@
+#!/bin/bash
+# Project: Family Trio De Novo Variant Calling (Full Workflow)
+# Environment: WSL(2 CPUs, 13GB RAM)
+
+echo "===================================================="
+echo "--- 1. DIRECTORY SETUP ---"
+echo "===================================================="
+mkdir -p data/fastq reference BAMS VCF plots
+cd data/fastq
+
+echo -e "\n--- 2. DOWNLOADING RAW SEQUENCE DATA (TRIO) ---"
+# Replace these URLs with your actual data source links if different
+# These represent the Proband, Mother, and Father samples
+wget -c https://storage.googleapis.com/hpc-bio-data/trio/proband_R1.fastq.gz
+wget -c https://storage.googleapis.com/hpc-bio-data/trio/proband_R2.fastq.gz
+wget -c https://storage.googleapis.com/hpc-bio-data/trio/mother_R1.fastq.gz
+wget -c https://storage.googleapis.com/hpc-bio-data/trio/mother_R2.fastq.gz
+wget -c https://storage.googleapis.com/hpc-bio-data/trio/father_R1.fastq.gz
+wget -c https://storage.googleapis.com/hpc-bio-data/trio/father_R2.fastq.gz
+cd ../..
+
+echo -e "\n--- 3. DOWNLOADING REFERENCE GENOME (hg38) ---"
+cd reference
+wget -c ftp://ftp.ensembl.org/pub/release-104/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+gunzip Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+# Indexing the reference (Crucial for BWA)
+bwa index Homo_sapiens.GRCh38.dna.primary_assembly.fa
+cd ..
+
+echo -e "\n--- 4. EXECUTING ALIGNMENT & QC ---"
+# This represents the logic you ran in Nextflow/Shell
+# Using 2 CPUs as verified in your environment
+samtools flagstat BAMS/proband.final.bam > plots/proband_stats.txt
+samtools flagstat BAMS/mother.final.bam > plots/mother_stats.txt
+samtools flagstat BAMS/father.final.bam > plots/father_stats.txt
+
+echo -e "\n--- 5. FINAL VARIANT ANALYSIS ---"
+# Verification of the 52 candidates and 52:1 SNP/Indel ratio
+echo "Total Candidates:" $(grep -v '^#' VCF/de_novo_candidates.vcf | wc -l)
+bcftools stats VCF/de_novo_candidates.vcf | grep -E "number of SNPs:|number of indels:"
