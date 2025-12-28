@@ -83,7 +83,6 @@ The analysis framework used in this project is commonly applied in studies of:
 - **Neurodevelopmental disorders**
 - **Congenital conditions with a genetic basis**
 
-⚠️ This project represents a **computational variant discovery workflow** and does **not** provide a clinical diagnosis. All identified variants are **candidate mutations** that require further annotation, population frequency assessment, and functional validation.
 
 ---
 
